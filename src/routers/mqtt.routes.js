@@ -1,8 +1,9 @@
 import { Router } from 'express'
-import { hello } from '../controllers/mqtt.controller.js';
+import { publisher, subscriber } from '../controllers/mqtt.controller.js';
 
 const router = Router();
 
-router.get('/', hello);
+router.post('/publisher', publisher);
+router.get('/subscriber', subscriber);
 
 export default router;

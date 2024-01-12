@@ -5,7 +5,9 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import routes from './routers/mqtt.routes.js'
+import whatsappRoutes from './routers/whatsapp.routes.js'
 import {resError} from './utils/index.js';
+
 
 dotenv.config();
 
@@ -21,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 // Ruta de ejemplo
 
 app.use(routes);
+app.use(whatsappRoutes);
 
 // Manejador de errores.
 app.use((error, req, res, next) => {
