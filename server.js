@@ -2,8 +2,10 @@ import dotenv from 'dotenv';
 import app from './src/app.js';
 import  whatsapp  from './src/utils/whatsapp.js';
 import mqttClient, { subscribeToTopic, mqttOnMessage, mqttOnError } from './src/utils/mqtt.js';
+import createTableTel from './src/utils/createtableTel.js';
 
 dotenv.config();
+
 
 const port = process.env.PORT || 4000;
 let topic = 'led';
@@ -14,6 +16,8 @@ whatsapp.initialize();
 mqttClient.on('connect', () => {
   console.log('Client connected: ');
 });
+
+createTableTel();
 
 
 subscribeToTopic(topic);

@@ -2,6 +2,25 @@ import moment from "moment";
 
 import mqtt  from "mqtt";
 import whatsapp, { sendWhatsappMsg } from "./whatsapp.js";
+import mysqlPool from "../config/db.js";
+
+
+
+// Octener el tel desde la base de datos.
+const getTel = async() => {
+  let tel;
+  const connection  =  await mysqlPool.getConnection();
+
+  const selectquery = `
+      SELECT * FROM tel WHERE id =1;
+    `
+
+  const [rows] = await connection.query(selectquery); 
+
+  connection.release();
+  return rows
+}
+
 
 let mqttClient;
 
@@ -43,20 +62,30 @@ export const subscribeToTopic = async(topic) => {
 export const mqttOnMessage = () => {
    // received message
   mqttClient.on('message',async (topic, message, packet) => { 
-
+    const tel = '5083609228';
+    
     let now = moment();
     let dateFormated =  now.format("DD/MM/YYYY");
-    let timeFormated = now.format("HH:mm:ss");
+    let timeFormated = now.format("h:mm:ss a");
 
     let msg = message.toString();
-    let tel = '5083609228';
+   
 
     if (msg === '1') {
+     
+      const telResult = getTel();
+
+      if (telResult.length > 0 ) {
+          tel = telResult[0].telefono;
+      }
+     
+
       
       
 
       sendWhatsappMsg(tel, `Led encendido:  ${dateFormated} ${timeFormated }`);
     }else if (msg === '0') {
+      
       sendWhatsappMsg(tel, `Led Apagado:  ${dateFormated} ${timeFormated }`);
 
     }
